@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HPG Property Management — Emergency On-Call</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #D0021B;
+      --red-dark: #9B0014;
+      --red-glow: rgba(208,2,27,0.18);
+      --black: #0D0D0D;
+      --charcoal: #1A1A1A;
+      --card: #1F1F1F;
+      --border: #2E2E2E;
+      --text: #F0EDE8;
+      --muted: #888;
+      --accent: #F5C842;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 1;
+      background: var(--charcoal);
+      border-bottom: 3px solid var(--red);
+      padding: 28px 24px 22px;
+      text-align: center;
+      animation: slideDown 0.6s ease both;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      background: var(--red);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: #fff;
+      letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(26px, 7vw, 42px);
+      letter-spacing: 2px;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    header h1 span { color: var(--red); }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── EMERGENCY BANNER ── */
+    .emergency-banner {
+      position: relative;
+      z-index: 1;
+      background: var(--red);
+      padding: 14px 20px;
+      text-align: center;
+      animation: pulse-banner 2.5s ease-in-out infinite;
+    }
+
+    .emergency-banner p {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(16px, 4.5vw, 22px);
+      letter-spacing: 3px;
+      color: #fff;
+    }
+
+    .emergency-banner .sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 2px;
+    }
+
+    @keyframes pulse-banner {
+      0%, 100% { background: var(--red); }
+      50% { background: var(--red-dark); }
+    }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* ── CONTACT CARDS ── */
+    .contact-section {
+      margin-bottom: 36px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+
+    .contact-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--red);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .contact-card:nth-child(1) { animation-delay: 0.1s; }
+    .contact-card:nth-child(2) { animation-delay: 0.2s; }
+    .contact-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .contact-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--red-glow);
+      border-left-color: var(--accent);
+    }
+
+    .contact-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(208,2,27,0.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .contact-card:hover .contact-icon {
+      background: rgba(245,200,66,0.12);
+    }
+
+    .contact-info { flex: 1; }
+    .contact-type {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .contact-value {
+      font-size: clamp(18px, 5vw, 24px);
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .contact-action {
+      font-size: 12px;
+      color: var(--red);
+      letter-spacing: 1px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .contact-card:hover .contact-action {
+      color: var(--accent);
+    }
+
+    .arrow {
+      font-size: 20px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* ── EMERGENCIES GRID ── */
+    .emergencies-section { margin-bottom: 36px; }
+
+    .emergencies-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .emergency-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .emergency-item:nth-child(1) { animation-delay: 0.15s; }
+    .emergency-item:nth-child(2) { animation-delay: 0.2s; }
+    .emergency-item:nth-child(3) { animation-delay: 0.25s; }
+    .emergency-item:nth-child(4) { animation-delay: 0.3s; }
+    .emergency-item:nth-child(5) { animation-delay: 0.35s; }
+    .emergency-item:nth-child(6) { animation-delay: 0.4s; }
+
+    .emergency-item.fire {
+      border-color: var(--red);
+      background: rgba(208,2,27,0.08);
+      grid-column: 1 / -1;
+    }
+
+    .e-icon { font-size: 24px; flex-shrink: 0; margin-top: 1px; }
+
+    .e-info { flex: 1; }
+    .e-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .e-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .e-desc strong { color: var(--red); }
+
+    /* ── HOURS NOTE ── */
+    .hours-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 36px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      animation: fadeUp 0.5s ease 0.4s both;
+    }
+
+    .hours-icon { font-size: 26px; flex-shrink: 0; }
+    .hours-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .hours-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 20px 16px 30px;
+      border-top: 1px solid var(--border);
+    }
+    footer p {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    footer span { color: var(--red); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 420px) {
+      .emergencies-grid { grid-template-columns: 1fr; }
+      .emergency-item.fire { grid-column: 1; }
+      .contact-value { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-row">
+      <div class="logo-badge">HPG</div>
+      <h1>HPG <span>Property</span> Management</h1>
+    </div>
+    <p class="subtitle">Emergency On-Call Information</p>
+  </header>
+
+  <div class="emergency-banner">
+    <p>🚨 24 / 7 Emergency Line Active</p>
+    <p class="sub">For life-threatening emergencies, always call 911 first</p>
+  </div>
+
+  <main>
+
+    <!-- CONTACT CARDS -->
+    <div class="contact-section">
+      <p class="section-label">Reach Us Now</p>
+      <div class="contact-cards">
+
+        <a class="contact-card" href="tel:+18074074461">
+          <div class="contact-icon">📞</div>
+          <div class="contact-info">
+            <div class="contact-type">On-Call Phone</div>
+            <div class="contact-value">+1 (807) 407-4461</div>
+            <div class="contact-action">Tap to Call</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="contact-card" href="sms:+18074074461">
+          <div class="contact-icon">💬</div>
+          <div class="contact-info">
+            <div class="contact-type">Text / SMS</div>
+            <div class="contact-value">+1 (807) 407-4461</div>
+            <div class="contact-action">Tap to Text</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="contact-card" href="mailto:wo@hpggroup.co">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-info">
+            <div class="contact-type">Email</div>
+            <div class="contact-value">wo@hpggroup.co</div>
+            <div class="contact-action">Tap to Email</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- EMERGENCIES -->
+    <div class="emergencies-section">
+      <p class="section-label">Covered Emergencies</p>
+      <div class="emergencies-grid">
+
+        <div class="emergency-item fire">
+          <div class="e-icon">🔥</div>
+          <div class="e-info">
+            <div class="e-title">Fire or Gas Leak</div>
+            <div class="e-desc"><strong>Call 911 immediately.</strong> Then evacuate and contact us to notify management.</div>
+          </div>
+        </div>
+
+        <div class="emergency-item">
+          <div class="e-icon">💧</div>
+          <div class="e-info">
+            <div class="e-title">Flooding / Water Damage</div>
+            <div class="e-desc">Burst pipes, leaks, or sewage backup. Shut off water if safe.</div>
+          </div>
+        </div>
+
+        <div class="emergency-item">
+          <div class="e-icon">🌡️</div>
+          <div class="e-info">
+            <div class="e-title">No Heat / HVAC</div>
+            <div class="e-desc">Loss of heating or cooling system — urgent in extreme weather.</div>
+          </div>
+        </div>
+
+        <div class="emergency-item">
+          <div class="e-icon">🔑</div>
+          <div class="e-info">
+            <div class="e-title">Lock-Out</div>
+            <div class="e-desc">Locked out of your unit after hours.</div>
+          </div>
+        </div>
+
+        <div class="emergency-item">
+          <div class="e-icon">⚡</div>
+          <div class="e-info">
+            <div class="e-title">Electrical Issues</div>
+            <div class="e-desc">Power outage, exposed wiring, or sparking outlets.</div>
+          </div>
+        </div>
+
+        <div class="emergency-item">
+          <div class="e-icon">🔧</div>
+          <div class="e-info">
+            <div class="e-title">Other Urgent Issues</div>
+            <div class="e-desc">Any safety or structural concern not listed above.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- HOURS NOTE -->
+    <div class="hours-card">
+      <div class="hours-icon">🕐</div>
+      <div>
+        <div class="hours-title">Important Notice</div>
+        <div class="hours-body">
+          This on-call line is reserved for <strong style="color:var(--text)">genuine emergencies only</strong>.<br>
+          For non-urgent maintenance requests, please contact us during regular office hours.<br><br>
+          <strong style="color:var(--text)">Always dial 911</strong> for any life-threatening situation.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2025 <span>HPG Property Management</span> · All rights reserved</p>
+    <p style="margin-top:6px;">wo@hpggroup.co &nbsp;·&nbsp; +1 (807) 407-4461</p>
+  </footer>
+
+</body>
+</html>
