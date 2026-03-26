@@ -4,21 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HPG Property Management — Emergency On-Call</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --red: #D0021B;
+      --red: #C8102E;
       --red-dark: #9B0014;
-      --red-glow: rgba(208,2,27,0.18);
-      --black: #0D0D0D;
-      --charcoal: #1A1A1A;
-      --card: #1F1F1F;
-      --border: #2E2E2E;
-      --text: #F0EDE8;
-      --muted: #888;
-      --accent: #F5C842;
+      --red-glow: rgba(200,16,46,0.15);
+      --black: #0A0A0A;
+      --charcoal: #141414;
+      --card: #1C1C1C;
+      --card2: #212121;
+      --border: #2A2A2A;
+      --text: #F2EFE9;
+      --muted: #7A7A7A;
+      --gold: #C9A84C;
     }
 
     html { scroll-behavior: smooth; }
@@ -31,15 +32,13 @@
       overflow-x: hidden;
     }
 
-    /* ── NOISE TEXTURE OVERLAY ── */
-    body::before {
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 0;
-      opacity: 0.6;
+      z-index: 999;
     }
 
     /* ── HEADER ── */
@@ -48,80 +47,103 @@
       z-index: 1;
       background: var(--charcoal);
       border-bottom: 3px solid var(--red);
-      padding: 28px 24px 22px;
+      padding: 22px 24px 20px;
       text-align: center;
       animation: slideDown 0.6s ease both;
     }
 
-    .logo-row {
+    .logo-wrap {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      margin-bottom: 6px;
+      gap: 16px;
+      margin-bottom: 10px;
     }
 
-    .logo-badge {
-      width: 48px;
-      height: 48px;
-      background: var(--red);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      color: #fff;
-      letter-spacing: 1px;
-      flex-shrink: 0;
+    .logo-wrap img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
     }
 
-    header h1 {
+    .divider-line {
+      width: 1px;
+      height: 44px;
+      background: var(--border);
+    }
+
+    .company-name { text-align: left; }
+
+    .company-name .top {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(26px, 7vw, 42px);
-      letter-spacing: 2px;
-      color: var(--text);
+      font-size: clamp(22px, 6vw, 34px);
+      letter-spacing: 2.5px;
       line-height: 1;
+      color: var(--text);
     }
 
-    header h1 span { color: var(--red); }
+    .company-name .top span { color: var(--red); }
 
-    .subtitle {
-      font-size: 13px;
-      color: var(--muted);
+    .company-name .bottom {
+      font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      margin-top: 4px;
+      color: var(--muted);
+      margin-top: 3px;
     }
 
-    /* ── EMERGENCY BANNER ── */
-    .emergency-banner {
+    .address-strip {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .address-strip a { color: var(--muted); text-decoration: none; }
+    .address-strip a:hover { color: var(--text); }
+
+    /* ── BANNER ── */
+    .banner {
       position: relative;
       z-index: 1;
       background: var(--red);
-      padding: 14px 20px;
+      padding: 13px 20px;
       text-align: center;
-      animation: pulse-banner 2.5s ease-in-out infinite;
     }
 
-    .emergency-banner p {
+    .banner-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: #fff;
+      border-radius: 50%;
+      animation: blink 1.3s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.25; transform: scale(0.65); }
+    }
+
+    .banner p {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(16px, 4.5vw, 22px);
+      font-size: clamp(15px, 4vw, 20px);
       letter-spacing: 3px;
       color: #fff;
     }
 
-    .emergency-banner .sub {
+    .banner .sub {
       font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      letter-spacing: 1.5px;
-      color: rgba(255,255,255,0.8);
-      margin-top: 2px;
-    }
-
-    @keyframes pulse-banner {
-      0%, 100% { background: var(--red); }
-      50% { background: var(--red-dark); }
+      font-size: 11.5px;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.78);
+      margin-top: 3px;
     }
 
     /* ── MAIN ── */
@@ -130,106 +152,115 @@
       z-index: 1;
       max-width: 680px;
       margin: 0 auto;
-      padding: 28px 16px 60px;
-    }
-
-    /* ── CONTACT CARDS ── */
-    .contact-section {
-      margin-bottom: 36px;
+      padding: 30px 16px 60px;
     }
 
     .section-label {
-      font-size: 11px;
+      font-size: 10.5px;
       letter-spacing: 4px;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 14px;
-      padding-left: 4px;
+      margin-bottom: 13px;
+      padding-left: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .contact-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
+
+    /* ── CONTACT CARDS ── */
+    .contact-section { margin-bottom: 34px; }
+    .contact-cards { display: flex; flex-direction: column; gap: 11px; }
 
     .contact-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-left: 4px solid var(--red);
       border-radius: 12px;
-      padding: 18px 20px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       text-decoration: none;
       color: inherit;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-left-color 0.22s ease;
       animation: fadeUp 0.5s ease both;
     }
 
-    .contact-card:nth-child(1) { animation-delay: 0.1s; }
-    .contact-card:nth-child(2) { animation-delay: 0.2s; }
-    .contact-card:nth-child(3) { animation-delay: 0.3s; }
+    .contact-card:nth-child(1) { animation-delay: 0.08s; }
+    .contact-card:nth-child(2) { animation-delay: 0.16s; }
+    .contact-card:nth-child(3) { animation-delay: 0.24s; }
 
     .contact-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 30px var(--red-glow);
-      border-left-color: var(--accent);
+      box-shadow: 0 10px 32px var(--red-glow);
+      border-left-color: var(--gold);
     }
 
     .contact-icon {
-      width: 50px;
-      height: 50px;
-      background: rgba(208,2,27,0.12);
+      width: 48px;
+      height: 48px;
+      background: rgba(200,16,46,0.1);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 21px;
       flex-shrink: 0;
       transition: background 0.2s;
     }
 
-    .contact-card:hover .contact-icon {
-      background: rgba(245,200,66,0.12);
-    }
+    .contact-card:hover .contact-icon { background: rgba(201,168,76,0.1); }
 
-    .contact-info { flex: 1; }
+    .contact-info { flex: 1; min-width: 0; }
+
     .contact-type {
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 2.5px;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
+
     .contact-value {
-      font-size: clamp(18px, 5vw, 24px);
+      font-size: clamp(17px, 4.8vw, 22px);
       font-weight: 600;
       color: var(--text);
       line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .contact-action {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--red);
       letter-spacing: 1px;
       font-weight: 500;
       text-transform: uppercase;
+      margin-top: 3px;
+      transition: color 0.2s;
     }
 
-    .contact-card:hover .contact-action {
-      color: var(--accent);
-    }
+    .contact-card:hover .contact-action { color: var(--gold); }
 
     .arrow {
-      font-size: 20px;
-      color: var(--muted);
+      font-size: 22px;
+      color: var(--border);
       flex-shrink: 0;
+      transition: color 0.2s;
     }
 
-    /* ── EMERGENCIES GRID ── */
-    .emergencies-section { margin-bottom: 36px; }
+    .contact-card:hover .arrow { color: var(--gold); }
+
+    /* ── EMERGENCIES ── */
+    .emergencies-section { margin-bottom: 34px; }
 
     .emergencies-grid {
       display: grid;
@@ -237,126 +268,161 @@
       gap: 10px;
     }
 
-    .emergency-item {
+    .e-item {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 16px;
+      border-radius: 11px;
+      padding: 14px 15px;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 11px;
       animation: fadeUp 0.5s ease both;
     }
 
-    .emergency-item:nth-child(1) { animation-delay: 0.15s; }
-    .emergency-item:nth-child(2) { animation-delay: 0.2s; }
-    .emergency-item:nth-child(3) { animation-delay: 0.25s; }
-    .emergency-item:nth-child(4) { animation-delay: 0.3s; }
-    .emergency-item:nth-child(5) { animation-delay: 0.35s; }
-    .emergency-item:nth-child(6) { animation-delay: 0.4s; }
+    .e-item:nth-child(1) { animation-delay: 0.10s; }
+    .e-item:nth-child(2) { animation-delay: 0.16s; }
+    .e-item:nth-child(3) { animation-delay: 0.22s; }
+    .e-item:nth-child(4) { animation-delay: 0.28s; }
+    .e-item:nth-child(5) { animation-delay: 0.34s; }
+    .e-item:nth-child(6) { animation-delay: 0.40s; }
 
-    .emergency-item.fire {
-      border-color: var(--red);
-      background: rgba(208,2,27,0.08);
+    .e-item.fire {
       grid-column: 1 / -1;
+      border-color: var(--red);
+      background: rgba(200,16,46,0.07);
     }
 
-    .e-icon { font-size: 24px; flex-shrink: 0; margin-top: 1px; }
-
-    .e-info { flex: 1; }
-    .e-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-    .e-desc {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
+    .e-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+    .e-title { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .e-desc { font-size: 12px; color: var(--muted); line-height: 1.45; }
     .e-desc strong { color: var(--red); }
 
-    /* ── HOURS NOTE ── */
-    .hours-card {
-      background: var(--card);
+    /* ── NOTICE ── */
+    .notice-card {
+      background: var(--card2);
       border: 1px solid var(--border);
+      border-top: 3px solid var(--gold);
       border-radius: 12px;
       padding: 18px 20px;
-      margin-bottom: 36px;
+      margin-bottom: 34px;
       display: flex;
       gap: 14px;
       align-items: flex-start;
-      animation: fadeUp 0.5s ease 0.4s both;
+      animation: fadeUp 0.5s ease 0.42s both;
     }
 
-    .hours-icon { font-size: 26px; flex-shrink: 0; }
-    .hours-title {
-      font-size: 13px;
+    .notice-icon { font-size: 24px; flex-shrink: 0; }
+
+    .notice-title {
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--accent);
-      margin-bottom: 6px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 7px;
     }
-    .hours-body {
+
+    .notice-body {
       font-size: 13px;
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.72;
     }
+
+    .notice-body strong { color: var(--text); }
+    .notice-body a { color: inherit; }
 
     /* ── FOOTER ── */
     footer {
       position: relative;
       z-index: 1;
-      text-align: center;
-      padding: 20px 16px 30px;
+      background: var(--charcoal);
       border-top: 1px solid var(--border);
+      padding: 22px 20px 28px;
+      text-align: center;
     }
-    footer p {
+
+    .footer-logo {
+      height: 30px;
+      filter: brightness(0) invert(1);
+      opacity: 0.45;
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
       font-size: 12px;
       color: var(--muted);
-      letter-spacing: 1px;
+      text-decoration: none;
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: border-color 0.2s, color 0.2s;
     }
+
+    .footer-links a:hover { border-color: var(--red); color: var(--text); }
+
+    footer p { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
     footer span { color: var(--red); }
 
     /* ── ANIMATIONS ── */
     @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ── MOBILE ── */
-    @media (max-width: 420px) {
+    @media (max-width: 440px) {
       .emergencies-grid { grid-template-columns: 1fr; }
-      .emergency-item.fire { grid-column: 1; }
-      .contact-value { font-size: 18px; }
+      .e-item.fire { grid-column: 1; }
+      .logo-wrap img { height: 40px; }
+      .divider-line { height: 36px; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo-row">
-      <div class="logo-badge">HPG</div>
-      <h1>HPG <span>Property</span> Management</h1>
+    <div class="logo-wrap">
+      <img
+        src="https://www.hpggroup.co/assets/images/hpglogo.png"
+        alt="HPG Logo"
+        onerror="this.style.display='none'; document.querySelector('.divider-line').style.display='none';"
+      />
+      <div class="divider-line"></div>
+      <div class="company-name">
+        <div class="top">HPG <span>Property</span> Management</div>
+        <div class="bottom">Thunder Bay, Ontario · Canada</div>
+      </div>
     </div>
-    <p class="subtitle">Emergency On-Call Information</p>
+    <p class="address-strip">
+      231 Red River Road, Thunder Bay, ON P7B 1A7 &nbsp;·&nbsp;
+      <a href="https://www.hpggroup.co" target="_blank">hpggroup.co</a>
+    </p>
   </header>
 
-  <div class="emergency-banner">
-    <p>🚨 24 / 7 Emergency Line Active</p>
-    <p class="sub">For life-threatening emergencies, always call 911 first</p>
+  <div class="banner">
+    <div class="banner-inner">
+      <div class="pulse-dot"></div>
+      <p>24 / 7 Emergency On-Call Active</p>
+      <div class="pulse-dot"></div>
+    </div>
+    <p class="sub">For life-threatening emergencies — call 911 first</p>
   </div>
 
   <main>
 
-    <!-- CONTACT CARDS -->
     <div class="contact-section">
       <p class="section-label">Reach Us Now</p>
       <div class="contact-cards">
@@ -394,54 +460,53 @@
       </div>
     </div>
 
-    <!-- EMERGENCIES -->
     <div class="emergencies-section">
       <p class="section-label">Covered Emergencies</p>
       <div class="emergencies-grid">
 
-        <div class="emergency-item fire">
+        <div class="e-item fire">
           <div class="e-icon">🔥</div>
-          <div class="e-info">
+          <div>
             <div class="e-title">Fire or Gas Leak</div>
-            <div class="e-desc"><strong>Call 911 immediately.</strong> Then evacuate and contact us to notify management.</div>
+            <div class="e-desc"><strong>Call 911 immediately.</strong> Evacuate the building, then contact HPG to notify management.</div>
           </div>
         </div>
 
-        <div class="emergency-item">
+        <div class="e-item">
           <div class="e-icon">💧</div>
-          <div class="e-info">
+          <div>
             <div class="e-title">Flooding / Water Damage</div>
-            <div class="e-desc">Burst pipes, leaks, or sewage backup. Shut off water if safe.</div>
+            <div class="e-desc">Burst pipes, active leaks, or sewage backup. Shut off water if safe to do so.</div>
           </div>
         </div>
 
-        <div class="emergency-item">
+        <div class="e-item">
           <div class="e-icon">🌡️</div>
-          <div class="e-info">
+          <div>
             <div class="e-title">No Heat / HVAC</div>
-            <div class="e-desc">Loss of heating or cooling system — urgent in extreme weather.</div>
+            <div class="e-desc">Loss of heating or cooling — critical during extreme weather.</div>
           </div>
         </div>
 
-        <div class="emergency-item">
+        <div class="e-item">
           <div class="e-icon">🔑</div>
-          <div class="e-info">
+          <div>
             <div class="e-title">Lock-Out</div>
-            <div class="e-desc">Locked out of your unit after hours.</div>
+            <div class="e-desc">Locked out of your unit after business hours.</div>
           </div>
         </div>
 
-        <div class="emergency-item">
+        <div class="e-item">
           <div class="e-icon">⚡</div>
-          <div class="e-info">
+          <div>
             <div class="e-title">Electrical Issues</div>
-            <div class="e-desc">Power outage, exposed wiring, or sparking outlets.</div>
+            <div class="e-desc">Power outage, sparking outlets, or exposed wiring in your unit.</div>
           </div>
         </div>
 
-        <div class="emergency-item">
+        <div class="e-item">
           <div class="e-icon">🔧</div>
-          <div class="e-info">
+          <div>
             <div class="e-title">Other Urgent Issues</div>
             <div class="e-desc">Any safety or structural concern not listed above.</div>
           </div>
@@ -450,15 +515,16 @@
       </div>
     </div>
 
-    <!-- HOURS NOTE -->
-    <div class="hours-card">
-      <div class="hours-icon">🕐</div>
+    <div class="notice-card">
+      <div class="notice-icon">⚠️</div>
       <div>
-        <div class="hours-title">Important Notice</div>
-        <div class="hours-body">
-          This on-call line is reserved for <strong style="color:var(--text)">genuine emergencies only</strong>.<br>
-          For non-urgent maintenance requests, please contact us during regular office hours.<br><br>
-          <strong style="color:var(--text)">Always dial 911</strong> for any life-threatening situation.
+        <div class="notice-title">Important Notice for Tenants</div>
+        <div class="notice-body">
+          This on-call line is reserved for <strong>genuine emergencies only</strong>.<br>
+          For non-urgent repairs or general inquiries, please contact us during regular business hours at
+          <strong><a href="mailto:Info@hpggroup.co">Info@hpggroup.co</a></strong>
+          or <strong><a href="tel:+18076999127">+1 (807) 699-9127</a></strong>.<br><br>
+          <strong>Always dial 911</strong> for any life-threatening situation before contacting property management.
         </div>
       </div>
     </div>
@@ -466,8 +532,18 @@
   </main>
 
   <footer>
-    <p>© 2025 <span>HPG Property Management</span> · All rights reserved</p>
-    <p style="margin-top:6px;">wo@hpggroup.co &nbsp;·&nbsp; +1 (807) 407-4461</p>
+    <img
+      class="footer-logo"
+      src="https://www.hpggroup.co/assets/images/hpglogo.png"
+      alt="HPG"
+      onerror="this.style.display='none'"
+    />
+    <div class="footer-links">
+      <a href="https://www.hpggroup.co" target="_blank">hpggroup.co</a>
+      <a href="tel:+18076999127">Office: (807) 699-9127</a>
+      <a href="mailto:Info@hpggroup.co">Info@hpggroup.co</a>
+    </div>
+    <p>© 2025 <span>HPG Group</span> · 231 Red River Road, Thunder Bay, ON P7B 1A7</p>
   </footer>
 
 </body>
